@@ -9,7 +9,18 @@ var server = net.createServer(function (socket) {
   socket.pipe(socket);
   gsock = socket;
     
-  socket.on("data", function(data) {
+  var message = "";
+
+  socket.on("data", function(chunk) {
+    message += chunk;
+    
+    var newlineIndex = message.indexOf('\n');
+    if (newlineIndex !== -1) {
+        var json = message.slice(0, newlineIndex);
+        gsock.emit("json", json);
+        message = message.slice(newlineIndex + 1);
+    }
+
   })
 });
 server.listen(1337, "127.0.0.1");
@@ -19,15 +30,9 @@ io.sockets.on('connection', function (socket) {
   console.log("browser connected");
   socket.emit('data', {message : "welcome browser"});
   
-    
-    var message = "";
-    
-    gsock.on("data", function(chunk) {
-      
-       message += chunk;
-       
+    gsock.on("json", function(data) {
        try {
-          json = JSON.parse(message); // let's not get crazy here
+          json = JSON.parse(data);
           console.log("sending");
           socket.emit("data", json);
           
@@ -35,7 +40,6 @@ io.sockets.on('connection', function (socket) {
            console.log("skipping: " + Err);
            return; // continue
        }
-       message = "";
 
     });
 });

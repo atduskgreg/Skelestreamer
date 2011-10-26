@@ -8,7 +8,7 @@ void setup() {
   size(500,500);
   cakeThread = new CakeThread(this);
   cakeThread.start();
-  frameRate(15);
+  frameRate(30);
   calculateNewUUID();
 }
 
