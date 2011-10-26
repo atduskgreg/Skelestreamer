@@ -21,6 +21,29 @@ class Skeletor {
   Skeletor() {
   }
 
+  String toJson() {
+    String result = "{\"project\" : \"skelestreamer\",";      
+    result += "\"session\" : \"" + uuid + "\",";       
+    result += "\"head\" : {\"x\":" + head.x + ", \"y\":" + head.y + ",\"z\":" + head.z + "},";         
+    result += "\"neck\" : {\"x\":" + neck.x + ", \"y\":" + neck.y + ",\"z\":" + neck.z + "},";          
+    result += "\"rightShoulder\" : {\"x\":" + rightShoulder.x + ", \"y\":" + rightShoulder.y + ",\"z\":" + rightShoulder.z + "},"; 
+    result += "\"rightElbow\" : {\"x\":" + rightElbow.x + ", \"y\":" + rightElbow.y + ",\"z\":" + rightElbow.z + "},";    
+    result += "\"rightHand\" : {\"x\":" + rightHand.x + ", \"y\":" + rightHand.y + ",\"z\":" + rightHand.z + "},";     
+    result += "\"leftShoulder\" : {\"x\":" + leftShoulder.x + ", \"y\":" + leftShoulder.y + ",\"z\":" + leftShoulder.z + "},";  
+    result += "\"leftElbow\" : {\"x\":" + leftElbow.x + ", \"y\":" + leftElbow.y + ",\"z\":" + leftElbow.z + "},";     
+    result += "\"leftHand\" : {\"x\":" + leftHand.x + ", \"y\":" + leftHand.y + ",\"z\":" + leftHand.z + "},";    
+    result += "\"torso\" : {\"x\":" + torso.x + ", \"y\":" + torso.y + ",\"z\":" + torso.z + "},";         
+    result += "\"rightHip\" : {\"x\":" + rightHip.x + ", \"y\":" + rightHip.y + ",\"z\":" + rightHip.z + "},";      
+    result += "\"rightKnee\" : {\"x\":" + rightKnee.x + ", \"y\":" + rightKnee.y + ",\"z\":" + rightKnee.z + "},";     
+    result += "\"rightFoot\" : {\"x\":" + rightFoot.x + ", \"y\":" + rightFoot.y + ",\"z\":" + rightFoot.z + "},";     
+    result += "\"leftHip\" : {\"x\":" + leftHip.x + ", \"y\":" + leftHip.y + ",\"z\":" + leftHip.z + "},";       
+    result += "\"leftKnee\" : {\"x\":" + leftKnee.x + ", \"y\":" + leftKnee.y + ",\"z\":" + leftKnee.z + "},";     
+    result += "\"leftFoot\" : {\"x\":" + leftFoot.x + ", \"y\":" + leftFoot.y + ",\"z\":" + leftFoot.z + "}";     
+
+    result += "}";
+    return result;
+  }
+
   Skeletor(PVector _head, PVector _neck, PVector _rightShoulder, PVector _rightElbow, PVector _rightHand, PVector _leftShoulder, PVector _leftElbow, PVector _leftHand, PVector _torso, PVector _rightHip, PVector _rightKnee, PVector _rightFoot, PVector _leftHip, PVector _leftKnee, PVector _leftFoot) {
     head          = _head;
     neck          = _neck;
@@ -99,24 +122,35 @@ class Skeletor {
 
 class CakeThread extends Thread {
 
-  PostData pd;
+//  PostData pd;
+  Client c;
+
 
   boolean running; 
 
-  String url = "http://www.itpcakemix.com/add";
+  //String url = "http://www.itpcakemix.com/add";
   ArrayList queue; // of skeletors
 
 
-  CakeThread () {
+  CakeThread (PApplet p) {
     running = false;
-    pd = new PostData();
+    //pd = new PostData();
     queue = new ArrayList();
+    c = new Client(p, "127.0.0.1", 1337);
+
   }
 
-  // TODO:
-  // - send all enqueued data whenever available
+
   void postData() {
-    int queueSize = queue.size();
+    
+    if(queue.size() > 0){
+      Skeletor toSend = (Skeletor)queue.get(0);
+      c.write(toSend.toJson());
+      c.write('\n');
+      queue.remove(0);
+    }
+    
+   /* int queueSize = queue.size();
 
     if (queueSize > 0) {
 
@@ -133,7 +167,7 @@ class CakeThread extends Thread {
         vals[i] = toSend.toString();
         //pd.post(url, toSend.vars(), toSend.vals());
       }
-      
+
       println("var0: " + vars[0] + " val0: " + vals[0]);
 
       String code = pd.post( url, vars, vals );
@@ -142,7 +176,7 @@ class CakeThread extends Thread {
       for (int i = 0; i < queueSize; i++) {
         queue.remove(0);
       }
-    }
+    }*/
   }
 
   // Overriding "start()"
@@ -155,7 +189,7 @@ class CakeThread extends Thread {
   void run () {
     while (running) {
       try {
-        //postData();
+        postData();
       } 
       catch (Exception e) {
         println("something went wrong with cakemix: " + e);
