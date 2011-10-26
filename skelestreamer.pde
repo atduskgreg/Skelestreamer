@@ -27,6 +27,7 @@ void setup() {
   kinect = new SimpleOpenNI(this);
   kinect.enableDepth();
   kinect.enableUser(SimpleOpenNI.SKEL_PROFILE_ALL);
+  kinect.setMirror(true);
   
   userList = new IntVector();
   enterSetup(); // FSM Bug: it should start by firing off the enter function for the starting state!
@@ -66,11 +67,11 @@ void doSetup() {
       text("Ready to stream.\nUUID: " + recordingUUID, 5, 25);
     } 
     else {
-      text("Waiting for user calibration.\tUUID: "+ recordingUUID, 5, 25);
+      text("Waiting for user calibration.\nUUID: "+ recordingUUID, 5, 25);
     }
   } 
   else {
-    text("Waiting for user.\tUUID: " + recordingUUID, 5, 25);
+    text("Waiting for user.\nUUID: " + recordingUUID, 5, 25);
   }
 }
 

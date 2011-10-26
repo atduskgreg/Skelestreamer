@@ -1,6 +1,6 @@
 <html>
   <head>
-        <script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
     <script src="for_each.js"></script>
 
     <script src="assets/Three.js"></script>
@@ -13,20 +13,24 @@
     var joints = {};
 
     
-    //$(function(){
-      
-      //$("#start").click(function(){
-        var socket = io.connect('http://localhost:5000');
-        socket.on('data', function (data) {
-          $.forEach(data, function(value, key, i){
-            if(key == "session"){
-              $("#" + key).html(value);
-            } else{
-              jointData[key] = value;
-            } 
+      $(document).ready(function(){
+        
+        $("#start").click(function(){
+          var socket = io.connect('http://localhost:5000');
+          socket.on('data', function (data) {
+            $.forEach(data, function(value, key, i){
+              if(key == "session"){
+                $("#" + key).html(value);
+              } else{
+                jointData[key] = value;
+              } 
+            });
           });
+          
+          return false;
         });
-      //});
+      });
+      
         
 
     var camera, scene, renderer,
@@ -91,8 +95,8 @@
           
           
         });
-        var headVec = new THREE.Vector3(jointData.head.x, jointData.head.y,jointData.head.z)
-        camera.lookAt(headVec);
+        var torsoVec = new THREE.Vector3(jointData.torso.x, jointData.torso.y,jointData.torso.z)
+        camera.lookAt(torsoVec);
         
         renderer.render( scene, camera );
 
