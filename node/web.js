@@ -28,7 +28,7 @@ server.listen(1337, "127.0.0.1");
 
 io.sockets.on('connection', function (socket) {
   console.log("browser connected");
-  socket.emit('data', {message : "welcome browser"});
+  //socket.emit('data', {message : "welcome browser"});
   
     gsock.on("json", function(data) {
        try {

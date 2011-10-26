@@ -1,17 +1,43 @@
 <html>
   <head>
         <script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+    <script src="for_each.js"></script>
 
     <script src="assets/Three.js"></script>
     <script src="assets/RequestAnimationFrame.js"></script>
+    <script src="http:///localhost:5000/socket.io/socket.io.js"></script>
 
     <script>
+    
+    var jointData = {};
+    var joints = {};
+
+    
+    //$(function(){
+        var socket = io.connect('http://localhost:5000');
+        socket.on('data', function (data) {
+          $.forEach(data, function(value, key, i){
+            //console.log($("#" + key));
+            if(key == "session"){
+              $("#" + key).html(value);
+            } else{
+              jointData[key] = value;
+            } 
+          });
+          //console.log(eval(data));
+        });
+      //});
 
     var camera, scene, renderer,
     geometry, material, mesh;
+    
 
     //init();
     //animate();
+    
+    // TODO: 
+    // - add in socket.io stuff to load joint positions
+    // - in animate function, update mesh positions based on that data
 
     function init() {
 
@@ -20,11 +46,20 @@
 
         scene = new THREE.Scene();
 
-        geometry = new THREE.CubeGeometry( 200, 200, 200 );
+        //geometry = new THREE.SphereGeometry( 20 );
+        
         material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
+        geometry = new THREE.SphereGeometry( 20 );
+        
+        var names = ["head", "neck", "rightShoulder", "rightElbow", "rightHand", "leftShoulder", "leftElbow", "leftHand", "torso", "rightHip", "rightKnee", "rightFoot", "leftHip", "leftKnee", "leftFoot"]
+        for(var i = 0; i < names.length; i++){
 
-        mesh = new THREE.Mesh( geometry, material );
-        scene.add( mesh );
+          joints[names[i]] = new THREE.Mesh( geometry, material );
+          scene.add( joints[names[i]] );
+
+        }
+
+
 
         renderer = new THREE.CanvasRenderer();
         renderer.setSize( window.innerWidth, window.innerHeight );
@@ -43,9 +78,18 @@
 
     function render() {
 
-        mesh.rotation.x += 0.01;
-        mesh.rotation.y += 0.02;
+        $.forEach(jointData, function(value, key, i){
+                            //      console.log(key);
 
+
+          if(joints[key]){
+
+            joints[key].position = value;
+            
+          }
+          
+          
+        });
         renderer.render( scene, camera );
 
     }
