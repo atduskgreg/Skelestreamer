@@ -1,52 +1,112 @@
 <html>
   <head>
-    <title>Skelestreamer</title>
-    <script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+        <script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
     <script src="for_each.js"></script>
 
+    <script src="assets/Three.js"></script>
+    <script src="assets/RequestAnimationFrame.js"></script>
     <script src="http:///localhost:5000/socket.io/socket.io.js"></script>
+
     <script>
+    
+    var jointData = {};
+    var joints = {};
+
+    
+    //$(function(){
       
-      
-      //$(function(){
+      //$("#start").click(function(){
         var socket = io.connect('http://localhost:5000');
         socket.on('data', function (data) {
           $.forEach(data, function(value, key, i){
-            //console.log($("#" + key));
             if(key == "session"){
               $("#" + key).html(value);
             } else{
-              $("#" + key).html("x :" + value.x + " y: " + value.y + " z: " + value.z);
-            }
+              jointData[key] = value;
+            } 
           });
-          //console.log(eval(data));
         });
       //});
-    </script>
+        
+
+    var camera, scene, renderer,
+    geometry, material, mesh;
+    
+
+    //init();
+    //animate();
+    
+    // TODO: 
+    // - add in socket.io stuff to load joint positions
+    // - in animate function, update mesh positions based on that data
+
+    function init() {
+
+        camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
+        camera.position.z = 1000;
+
+        scene = new THREE.Scene();
+
+        //geometry = new THREE.SphereGeometry( 20 );
+        
+        material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
+        geometry = new THREE.SphereGeometry( 20 );
+        
+        var names = ["head", "neck", "rightShoulder", "rightElbow", "rightHand", "leftShoulder", "leftElbow", "leftHand", "torso", "rightHip", "rightKnee", "rightFoot", "leftHip", "leftKnee", "leftFoot"]
+        for(var i = 0; i < names.length; i++){
+
+          joints[names[i]] = new THREE.Mesh( geometry, material );
+          scene.add( joints[names[i]] );
+
+        }
+
+
+
+        renderer = new THREE.CanvasRenderer();
+        renderer.setSize( window.innerWidth, window.innerHeight );
+
+        $("body").append( renderer.domElement );
+        
+
+    }
+
+    function animate() {
+
+        // Include examples/js/RequestAnimationFrame.js for cross-browser compatibility.
+       requestAnimationFrame( animate );
+        render();
+
+    }
+
+    function render() {
+        $.forEach(jointData, function(value, key, i){
+                            //      console.log(key);
+
+
+          if(joints[key]){
+
+            joints[key].position = value;
+            
+          }
+          
+          
+        });
+        var headVec = new THREE.Vector3(jointData.head.x, jointData.head.y,jointData.head.z)
+        camera.lookAt(headVec);
+        
+        renderer.render( scene, camera );
+
+    }
+    
+    $(document).ready(function() {
+      init();
+      animate();
+    });
+
+</script>
   </head>
   <body>
-    <h1>
-      Skelestreamer
-    </h1>
-    <h2>Data</h2>
-    <div><span class="label">uuid</span>                 <p id="session"></p></div>
-
-    <div><span class="label">head</span>                 <p id="head"></p>
-    </div><div><span class="label">neck</span>           <p id="neck"></p>
-    </div><div><span class="label">rightShoulder</span>  <p id="rightShoulder"></p>
-    </div><div><span class="label">rightElbow</span>     <p id="rightElbow"></p>
-    </div><div><span class="label">rightHand</span>      <p id="rightHand"></p>
-    </div><div><span class="label">leftShoulder</span>   <p id="leftShoulder"></p>
-    </div><div><span class="label">leftElbow</span>      <p id="leftElbow"></p>
-    </div><div><span class="label">leftHand</span>       <p id="leftHand"></p>
-    </div><div><span class="label">torso</span>          <p id="torso"></p>
-    </div><div><span class="label">rightHip</span>       <p id="rightHip"></p>
-    </div><div><span class="label">rightKnee</span>      <p id="rightKnee"></p>
-    </div><div><span class="label">rightFoot</span>      <p id="rightFoot"></p>
-    </div><div><span class="label">leftHip</span>        <p id="leftHip"></p>
-    </div><div><span class="label">leftKnee</span>       <p id="leftKnee"></p>
-    </div><div><span class="label">leftFoot</span>       <p id="leftFoot"></p>
-      </div>
-    
+    <h1>Test</h1>
+    <p><a href="#" id="start">start stream</a></p>
   </body>
 </html>
