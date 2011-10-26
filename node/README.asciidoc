@@ -1,0 +1,3 @@
+== Skelestreamer
+
+This is a demo of streaming skeleton data captured with the Kinect to the browser. It includes a Processing sketch which uses the SimpleOpenNI library to access the Kinect and the OpenNI skeleton-tracking middleware. This sketch converts the skeleton data into JSON and streams it to a server. The server is written in Node.js. It accepts the incoming stream of JSON from Processing and then re-transmits it to any clients that have connected using the Socket.io protoocol. The final piece is a web page that uses Socket.io to receive the stream of JSON from the server and then displays it as a series of spheres using Three.js. The web server and other web assets can be found in the node folder.
