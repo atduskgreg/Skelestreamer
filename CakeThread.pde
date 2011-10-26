@@ -65,8 +65,8 @@ class Skeletor {
 
   String[] vals() {
     String[] vals = {
-      "skelestreamer", 
-      uuid, 
+      "'skelestreamer'", 
+      "'" + uuid + "'", 
       "{'x':" + head.x + ", 'y':" + head.y + ",'z':" + head.z + "}", 
       "{'x':" + neck.x + ", 'y':" + neck.y + ",'z':" + neck.z + "}", 
       "{'x':" + rightShoulder.x + ", 'y':" + rightShoulder.y + ",'z':" + rightShoulder.z + "}", 
@@ -84,6 +84,16 @@ class Skeletor {
       "{'x':" + leftFoot.x + ", 'y':" + leftFoot.y + ",'z':" + leftFoot.z + "}",
     };
     return vals;
+  }
+
+  String toString() {
+    String result = "";
+
+    for (int i = 0; i < vars().length; i++) {
+      result = result + "{'" + vars()[i] + "' : '" + vals()[i] + "},";
+    }
+    result = result.substring(1, result.length()-1);
+    return result;
   }
 }
 
@@ -107,29 +117,29 @@ class CakeThread extends Thread {
   // - send all enqueued data whenever available
   void postData() {
     int queueSize = queue.size();
-    
+
     if (queueSize > 0) {
-      
-     // String[] vars = new String[0];
-      //String[] vals = new String[0];
-      
-       
-      
-     // TODO:
-     //- send all frames
+
+      String[] vars = new String[queueSize];
+      String[] vals = new String[queueSize];
+
+
+
+      // TODO:
+      //- send all frames
       for (int i = 0; i < queueSize; i++) {
         Skeletor toSend = (Skeletor)queue.get(0);
-
-        println("sending data. vars: " + toSend.vals()[0] + " vals: " + toSend.vals()[1]);
-         
-         //Skeletor toSend = (Skeletor)queue.get(0);
-
-       //pd.post(url, toSend.vars(), toSend.vals());
-        //String code = pd.post( url,vars, vals );
+        vars[i] = "" + i + "";
+        vals[i] = toSend.toString();
+        //pd.post(url, toSend.vars(), toSend.vals());
       }
       
-      
-      for(int i = 0; i < queueSize; i++){
+      println("var0: " + vars[0] + " val0: " + vals[0]);
+
+      String code = pd.post( url, vars, vals );
+
+
+      for (int i = 0; i < queueSize; i++) {
         queue.remove(0);
       }
     }
