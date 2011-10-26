@@ -92,6 +92,9 @@
           
           
         });
+        var headVec = new THREE.Vector3(head.x, head.y, head.z)
+        camera.lookAt(headVec);
+        
         renderer.render( scene, camera );
 
     }
