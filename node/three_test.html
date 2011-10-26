@@ -14,19 +14,20 @@
 
     
     //$(function(){
+      
+      //$("#start").click(function(){
         var socket = io.connect('http://localhost:5000');
         socket.on('data', function (data) {
           $.forEach(data, function(value, key, i){
-            //console.log($("#" + key));
             if(key == "session"){
               $("#" + key).html(value);
             } else{
               jointData[key] = value;
             } 
           });
-          //console.log(eval(data));
         });
       //});
+        
 
     var camera, scene, renderer,
     geometry, material, mesh;
@@ -65,6 +66,7 @@
         renderer.setSize( window.innerWidth, window.innerHeight );
 
         $("body").append( renderer.domElement );
+        
 
     }
 
@@ -77,7 +79,7 @@
     }
 
     function render() {
-
+        console.log(jointData.head.x);
         $.forEach(jointData, function(value, key, i){
                             //      console.log(key);
 
@@ -103,5 +105,6 @@
   </head>
   <body>
     <h1>Test</h1>
+    <p><a href="#" id="start">start stream</a></p>
   </body>
 </html>

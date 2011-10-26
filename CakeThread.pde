@@ -1,21 +1,21 @@
 import postdata.*;
 
 class Skeletor {
-  PVector head;
-  PVector neck;
-  PVector rightShoulder;
-  PVector rightElbow;
-  PVector rightHand;
-  PVector leftShoulder;
-  PVector leftElbow;
-  PVector leftHand;
-  PVector torso;
-  PVector rightHip;
-  PVector rightKnee;
-  PVector rightFoot;
-  PVector leftHip;
-  PVector leftKnee;
-  PVector leftFoot;
+    PVector head;
+    PVector neck;
+    PVector rightShoulder;
+    PVector rightElbow;
+    PVector rightHand;
+    PVector leftShoulder;
+    PVector leftElbow;
+    PVector leftHand;
+    PVector torso;
+    PVector rightHip;
+    PVector rightKnee;
+    PVector rightFoot;
+    PVector leftHip;
+    PVector leftKnee;
+    PVector leftFoot;
   String uuid;
 
   Skeletor() {

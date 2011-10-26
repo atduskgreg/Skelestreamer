@@ -20,26 +20,22 @@ var server = net.createServer(function (socket) {
         gsock.emit("json", json);
         message = message.slice(newlineIndex + 1);
     }
-
-  })
+  });
 });
 server.listen(1337, "127.0.0.1");
 
 
 io.sockets.on('connection', function (socket) {
-  console.log("browser connected");
-  //socket.emit('data', {message : "welcome browser"});
+  console.log("browser connected");  
+  gsock.on("json", function(data) {
+     try {
+        json = JSON.parse(data);
+        socket.emit("data", json);
+        
+     } catch (Err) {
+         console.log("skipping: " + Err);
+         return; // continue
+     }
   
-    gsock.on("json", function(data) {
-       try {
-          json = JSON.parse(data);
-          console.log("sending");
-          socket.emit("data", json);
-          
-       } catch (Err) {
-           console.log("skipping: " + Err);
-           return; // continue
-       }
-
-    });
+  });
 });
