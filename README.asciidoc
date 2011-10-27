@@ -5,3 +5,5 @@ This is a demo of streaming skeleton data captured with the Kinect to the browse
 See video of the process in action here: http://vimeo.com/31162993[http://vimeo.com/31162993].
 
 image::http://farm7.static.flickr.com/6219/6285276586_06e21861c4.jpg[]
+
+Read a full write-up here[http://urbanhonking.com/ideasfordozens/2011/10/27/streaming-kinect-skeleton-data-to-the-web-with-node-js/].
